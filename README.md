@@ -1,6 +1,30 @@
 # pyLazyModule
 A simple practice of dynamic module loader to avoid explicitly importing optional dependencies when a module is not accessed. This is useful when using multiple optional backends for deep learning.
 
+## ⚠️ **Caution!**
+
+The obfuscation in this package is implemented by dynamically redirecting the module's attributes. This approach might cause issues in some scenes:
+
+```python
+from pylazymodule import LazyModule
+module1 = LazyModule("module1")
+```
+
+### 📌 Example 1: checking if an object `m` is callable:
+- `callable(m)` True, but False after `del m.__call__`
+- `isinstance(m, Callable)` Always True
+- `hasattr(m, "__call__")` Depends on `hasattr(module1, "__call__")`
+
+### 📌 Example 2: checking an object `m`'s type
+- `type(m)` LazyModule's classname
+- `m.__class__` Depends on `hasattr(module1, ".__class__")`
+
+In these examples, methods of twos will yield **different results** depending on the context.
+
+💡**Recommendation:**
+
+Use **explicit attribute access**, such as `m.__call__`, to avoid potential errors. 
+
 ## Usage
 
 ```python
